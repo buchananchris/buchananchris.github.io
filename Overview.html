@@ -1,0 +1,176 @@
+<html>
+  <head>
+    <title>Layout example</title>
+    <meta content="">
+
+ 
+
+    <script src="d3.js" > </script>
+    <script src="c3.js"></script>
+    <script type="text/javascript" src="protovis.js"></script>
+    <script src="chart.js">// This is js comments</script>
+    
+    <meta charset="utf-8">
+    <!-- This is html comments -->
+    <style>
+    header {    
+      background-color:blue;
+      color:white;
+      text-align:center;
+      padding:5px;      
+      }
+    
+    /* This is how you comment in the styles section */
+    
+    nav {    
+      line-height:30px;
+      background-color:#eeeeee;
+      height:300px;
+      width:200px;
+      float:left;
+      }
+    section {    
+      width:350px;
+      float:left;
+      padding:10px;
+      }
+      
+    #sliding_diagram {
+      position: absolute;
+      bottom: 100%;
+      height : 100%;
+      width : 100%;
+      background: white;
+      opacity:0;  
+    }
+    .box {
+      position: absolute;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .box:hover #sliding_diagram {
+      bottom: 0;
+      -webkit-transition: all 1s, -webkit-transform 1s;
+      transition: all 1s, transform 1s;
+      width:100%;
+      height:100%;
+      opacity:1;
+    }
+    
+    .c3 path, .c3 line {
+      fill: none;
+      stroke: #000;
+    }
+
+    .axis path, .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+          
+    </style>
+
+  </head>
+  
+
+  <body>
+    <header>
+      <h1>Time series viewer</h1>
+    </header>
+    
+    <nav>
+      <ul style="list-style-type:none">
+        <li><a href="Overview.html" title="Main" /> Overview </a> </li>
+        <li><a href="PandID.html" title="Minimap" /> Piping and instrumentation </a> </li>
+        <li><a href="#" title="Reports" /> Reports </a> </li>
+        <li><a href="#" title="Analytics" /> Analytics </a> </li>
+        <li><a href="#" title="Export" /> Export </a> </li>
+    </nav>
+
+
+    <div id="container">
+      <div class="box" style="float:left; width:400px; height:300px; margin-left: 200px;">
+        <img src=te.svg style="height:100px; margin-left: 100px;"/>
+        <div id="sliding_diagram">
+          <a href="PandID.html"/> <img src=te.svg style="width:400px;" /> </a>
+        </div>
+      </div>
+      <div style="float:right; width:500px; height:300px; margin-right: 200px;" id="chart" >   </div>
+      
+    </div>
+    
+    <br>
+    <!--
+    <div id="barchart"> hello there</div>
+    -->
+
+    
+
+    
+    
+    
+
+    <center> <img src=Histogram.png title="More JS here" /> </center>
+        
+        <div id="center"><div id="fig">
+        <script type="text/javascript+protovis">
+          var experiment = {
+            trials: 10000, // number of trials
+            variables: 5 // number of random variables
+          };
+          experiment.values = pv.range(experiment.trials).map(function() {
+            return pv.sum(pv.range(experiment.variables), Math.random);
+          });
+
+
+          var w = 420,
+              h = 300,
+              x = pv.Scale.linear(0, experiment.variables).range(0, w),
+              bins = pv.histogram(experiment.values).bins(x.ticks(60)),
+              y = pv.Scale.linear(0, pv.max(bins, function(d) d.y)).range(0, h);
+
+          var vis = new pv.Panel()
+              .width(w)
+              .height(h)
+              .margin(20);
+
+          vis.add(pv.Bar)
+              .data(bins)
+              .bottom(0)
+              .left(function(d) x(d.x))
+              .width(function(d) x(d.dx))
+              .height(function(d) y(d.y))
+              .fillStyle("#aaa")
+              .strokeStyle("rgba(255, 255, 255, .2)")
+              .lineWidth(1)
+              .antialias(false);
+
+          vis.add(pv.Rule)
+              .data(y.ticks(5))
+              .bottom(y)
+              .strokeStyle("#fff")
+            .anchor("left").add(pv.Label)
+              .text(y.tickFormat);
+
+          vis.add(pv.Rule)
+              .data(x.ticks())
+              .left(x)
+              .bottom(-5)
+              .height(5)
+            .anchor("bottom").add(pv.Label)
+              .text(x.tickFormat);
+
+          vis.add(pv.Rule)
+              .bottom(0);
+
+          vis.render();
+
+        </script>
+    </div></div>
+
+    
+
+
+    
+  </body>
+</html>

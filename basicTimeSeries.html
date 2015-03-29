@@ -1,0 +1,183 @@
+<html>
+  <head>
+    <title>Basic Timeseries</title>
+    <script src="d3.js" > </script>
+    <script src="c3.js"></script>
+
+    <meta charset="utf-8">
+    <style>
+      .c3 path, .c3 line {
+      fill: none;
+      stroke: #000;
+      }
+      
+      .axis path, .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+      }
+      
+      .bar text {
+      fill: #fff;
+      }
+      
+      .bar rect {
+      fill: steelblue;
+      shape-rendering: crispEdges;
+      }
+      
+    </style>
+    
+    <script>
+      //This is the timeseries
+      var chart = c3.generate({
+	data: {
+	    url: 'data.csv',
+	    type: 'line',
+	},
+	});
+
+	
+      //This is the histogram
+      // plot a histogram from frq data in a .csv file
+      function parser(d) {
+	  d.pFRQ = +d.FRQ;
+	  return d;
+      }
+
+      function frqhist(csvdata) {
+	  var binsize = 0.1;
+	  var minbin = 0;
+	  var maxbin = 1;
+	  var numbins = (maxbin - minbin)/binsize
+	  
+	  var binmargin = .1;
+	  var margin = {top: 10, right: 30, bottom: 50, left: 60};
+	  var width = 450 - margin.left - margin.right;
+	  var height = 250 - margin.top - margin.bottom;
+      
+	  // Set the limits of the x axis
+	  var xmin = minbin 
+	  var xmax = maxbin 
+      
+	  histdata = new Array(numbins);
+	  for (var i = 0; i < numbins; i++) {
+	      histdata[i] = { numfill: 0 };
+	  }
+      
+	  // Fill histdata with y-axis values
+	  csvdata.forEach(function(d) {
+	      var bin = Math.floor((d.pFRQ - minbin) / binsize);
+	      if ((bin.toString() != "NaN") && (bin < histdata.length)) {
+		  histdata[bin].numfill += 1;
+		      
+	      }
+	  });
+	  
+	  
+	  // This scale is for determining the widths of the histogram bars
+	  // Must start at 0 or else x(binsize a.k.a dx) will be negative
+	  var x = d3.scale.linear()
+	      .domain([0, (xmax - xmin)])
+	      .range([0, width]);
+
+	  // Scale for the placement of the bars
+	  var x2 = d3.scale.linear()
+	      .domain([xmin, xmax])
+	      .range([0, width]);
+	  
+	  /*
+	  var y = d3.scale.linear()
+	      .domain([0, d3.max(histdata, function(d) { 
+		  return d.numfill; 
+		  })])
+	      .range([height, 0]);
+         */
+         
+          var y = d3.scale.linear()
+              .domain([-2, 1])
+              .range([height, 0]);
+	      
+	  var xAxis = d3.svg.axis()
+	      .scale(x2)
+	      .orient("bottom");
+	  var yAxis = d3.svg.axis()
+	      .scale(y)
+	      .ticks(10)
+	      .orient("left");
+
+	  // put the graph in the "frq" div
+	  var svg = d3.select("#frq").append("svg")
+	      .attr("width", width + margin.left + margin.right)
+	      .attr("height", height + margin.top + margin.bottom)
+	      .append("g")
+	      .attr("transform", "translate(" + margin.left + "," +  margin.top + ")");
+
+	  // set up the bars
+	  var bar = svg.selectAll(".bar")
+	      .data(histdata)
+	      .enter().append("g")
+	      .attr("class", "bar")
+	      .attr("transform", function(d, i) { return "translate(" + x2(i * binsize + minbin) + "," + y(d.numfill) + ")"; })
+
+
+	  // add rectangles of correct size at correct location
+	  bar.append("rect")
+	      .attr("x", x(binmargin))
+	      //.attr("width", x(binsize + 2 * binmargin))
+	      .attr("width", x(0.05))
+	      //.attr("height", function(d) { return height - y(d.numfill); });
+	      .attr("height", function(d) { return y(d.numfill); });
+	  
+
+	  // add the x axis and x-label
+	  svg.append("g")
+	      .attr("class", "x axis")
+	      .attr("transform", "translate(0," + height + ")")
+	      .call(xAxis);
+	  svg.append("text")
+	      .attr("class", "xlabel")
+	      .attr("text-anchor", "middle")
+	      .attr("x", width / 2)
+	      .attr("y", height + margin.bottom)
+	      .text("bins");
+
+	  // add the y axis and y-label
+	  svg.append("g")
+	      .attr("class", "y axis")
+	      .attr("transform", "translate(0,0)")
+	      .call(yAxis);
+	  svg.append("text")
+	      .attr("class", "ylabel")
+	      .attr("y", 0 - margin.left) // x and y switched due to rotation
+	      .attr("x", 0 - (height / 2))
+	      .attr("dy", "1em")
+	      .attr("transform", "rotate(-90)")
+	      .style("text-anchor", "middle")
+	      .text("FRQ");
+	
+      
+      };
+      
+      
+      
+      // Read in .csv data and make graph
+      d3.csv("data.csv", parser,
+	  function(error, csvdata) {
+	      frqhist(csvdata);
+      }); 
+
+
+    </script>
+    
+  </head>
+  
+  <body>
+  
+  <div id="chart"></div>
+  <div id="frq" class="graph"></div>
+  test text
+  
+  </body>
+  
+</html>
