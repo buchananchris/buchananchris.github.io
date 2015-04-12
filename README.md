@@ -1,2 +1,3 @@
 # buchananchris.github.io
-GitHub pages
+GitHub pages version
+

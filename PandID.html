@@ -21,7 +21,51 @@
         float:left;
         padding:10px;
         }
+      #item1 {
+        background-color:#fcc;
+        position:absolute;
+        left:280px;
+        top:130px;
+        width:300px;
+        height:180px;
+        border:0px solid red;
+        opacity: 0.4;
+      }
+      #item2 {
+        background-color:#54D4F4;
+        position:absolute;
+        top:130px;
+        left:580px;
+        width:300px;
+        height:180px;
+        /*border:0px solid blue;*/
+        opacity: 0.4;
+      }
+      #item3 {
+        background-color:#329275;
+        position:absolute;
+        top:130px;
+        left:880px;
+        width:300px;
+        height:180px;
+        /*border:0px solid blue;*/
+        opacity: 0.4;
+      }
+      #item4 {
+        background-color:#f4c454;
+        position:absolute;
+        top:400px;
+        left:800px;
+        width:200px;
+        height:250px;
+        /*border:0px solid blue;*/
+        opacity: 0.4;
+      }    
     </style>
+    
+    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="jquery.zoomooz.js"></script>
+    
   </head>
   <body>
     <header>
@@ -37,7 +81,13 @@
         <li><a href="#" title="Export" /> Export </a> </li>
     </nav>
     
-    <center> <img src=te.svg title="Click to zoom" /> </center>
-    <center> <img src=te_zoom.svg title="hello" /> </center>
+    <div id="item1" class="zoomTarget"> </div> 
+    <div id="item2" class="zoomTarget"> </div>
+    <div id="item3" class="zoomTarget"></div>
+    <div id="item4" class="zoomTarget" data-debug="true"></div>
+    
+    <center> <img src=te.svg title="Click to zoom" style="margin-top: 50px" /> </center>
+    <!--<center> <img src=te_zoom.svg title="hello" /> </center>
+    -->
   </body>
 </html>
