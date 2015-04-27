@@ -3,8 +3,6 @@
     <title>Layout example</title>
     <meta content="">
 
- 
-
     <script src="d3.js" > </script>
     <script src="c3.js"></script>
     <script type="text/javascript" src="protovis.js"></script>
@@ -132,9 +130,13 @@
       <ul style="list-style-type:none">
         <li><a href="Overview.html" title="Main" /> Overview </a> </li>
         <li><a href="PandID.html" title="Minimap" /> Piping and Instrumentation </a> </li>
-        <li><a href="#" title="Reports" /> Reports </a> </li>
-        <li><a href="#" title="Analytics" /> Analytics </a> </li>
+        <!--<li><a href="#" title="Reports" /> Reports </a> </li>
+        <li><a href="#" title="Analytics" /> Analytics </a> </li>-->
         <li><a href="#" title="Export" /> Export </a> </li>
+        <li><a href="TSc3.html" title="Time series" /> Time series </a> </li>
+        <li><a href="Histogram1.html" title="Histogram" /> Histogram </a> </li>
+        <li><a href="Histogram2.html" title="Vertical Hist" /> Vertical Hist </a> </li> 
+        <li><a href="#" title="Heat map" /> Heat map </a> </li>
     </div>
 
     <!-- ####### sliding_diagram
@@ -157,8 +159,9 @@
       </div>
     </div>
     
+    <!-- 
     <div style="float:right; width:500px; height:300px; margin-right: 130px;" id="chart" >   </div>
-
+    -->
     <br>
 
     
@@ -176,60 +179,7 @@
 
     
     
-        <div id="center" style="margin-top: 300px; margin-left: 50px;" ><div id="fig">
-        <script type="text/javascript+protovis">
-          var experiment = {
-            trials: 10000, // number of trials
-            variables: 5 // number of random variables
-          };
-          experiment.values = pv.range(experiment.trials).map(function() {
-            return pv.sum(pv.range(experiment.variables), Math.random);
-          });
 
-
-          var w = 420,
-              h = 300,
-              x = pv.Scale.linear(0, experiment.variables).range(0, w),
-              bins = pv.histogram(experiment.values).bins(x.ticks(60)),
-              y = pv.Scale.linear(0, pv.max(bins, function(d) d.y)).range(0, h);
-
-          var vis = new pv.Panel()
-              .width(w)
-              .height(h)
-              .margin(20);
-
-          vis.add(pv.Bar)
-              .data(bins)
-              .bottom(0)
-              .left(function(d) x(d.x))
-              .width(function(d) x(d.dx))
-              .height(function(d) y(d.y))
-              .fillStyle("#aaa")
-              .strokeStyle("rgba(255, 255, 255, .2)")
-              .lineWidth(1)
-              .antialias(false);
-
-          vis.add(pv.Rule)
-              .data(y.ticks(5))
-              .bottom(y)
-              .strokeStyle("#fff")
-            .anchor("left").add(pv.Label)
-              .text(y.tickFormat);
-
-          vis.add(pv.Rule)
-              .data(x.ticks())
-              .left(x)
-              .bottom(-5)
-              .height(5)
-            .anchor("bottom").add(pv.Label)
-              .text(x.tickFormat);
-
-          vis.add(pv.Rule)
-              .bottom(0);
-
-          vis.render();
-
-        </script>
     </div></div>
 
     

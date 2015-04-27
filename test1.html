@@ -1,0 +1,24 @@
+<html>
+<meta charset="utf-8">
+  <head>
+    <style>
+    </style>
+    
+  <script src="d3.v3.min.js" > </script>
+  
+  </head>
+  
+  <body>
+  
+    <script>
+    var data = []
+    d3.csv("hist.csv", function(csvData) {
+      data = csvData.map(function(d) {return [ +d.A, +d.B, +d.C ] });
+      console.log(data)
+    });
+    </script>
+    
+  </body>
+  
+  
+</html>

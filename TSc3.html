@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <title>Time series</title>
+    <meta charset="utf-8">
+    <meta content="">
+    <script src="d3.js" > </script>
+    <script src="c3.js"></script>
+  </head>
+  
+  <style>
+    .c3 path, .c3 line {
+      fill: none;
+      stroke: #000;
+    }
+    .axis path, .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+  </style>
+  
+  <body>
+    <script>
+    //This is the timeseries
+    var chart = c3.generate({
+      data: {
+          url: 'data.csv',
+          type: 'line',
+      },
+      axis: {
+        x:{label: 'time'},
+        y:{label: 'random'}  
+      }
+    });
+    </script>
+    
+    <div id="chart" >   </div>
+  </body>
+  
+</html>
