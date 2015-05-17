@@ -35,7 +35,7 @@
         
     var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);    
     var y = d3.scale.linear()
-        //.domain([0, d3.max(data, function(d) { return d.y; })])
+       // .domain([0, d3.max(data, function(d) { return d.y; })])
         .range([height, 0]);
 
     // Generate a histogram using twenty uniformly-spaced bins.

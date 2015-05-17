@@ -45,25 +45,28 @@
       
       console.log(values)
       
+      
       var margin = {top: 10, right: 30, bottom: 30, left: 30},
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
-      var x = d3.scale.linear()
+      var z = d3.scale.linear()
         .domain([0, 1])
-        .range([0, width]);
+        .range([0, height]);
 
+      console.log(z)
+      
       // Generate a histogram using twenty uniformly-spaced bins.
       var data = d3.layout.histogram()
-        .bins(x.ticks(20))
+        .bins(z.ticks(20))
         (values);
 
       var y = d3.scale.linear()
         .domain([0, d3.max(data, function(d) { return d.y; })])
-        .range([height, 0]);
+        .range([0, width]);
 
-      var xAxis = d3.svg.axis()
-        .scale(x)
+      var zAxis = d3.svg.axis()
+        .scale(z)
         .orient("left");
 
       var svg = d3.select("body").append("svg")
@@ -76,17 +79,17 @@
         .data(data)
       .enter().append("g")
         .attr("class", "bar")
-        .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+        .attr("transform", function(d) { return "translate(" + y(d.y) + "," + z(d.z) + ")"; });
 
       bar.append("rect")
-        .attr("x", 1)
-        .attr("width", x(data[0].dx) - 1)
-        .attr("height", function(d) { return height - y(d.y); });
+        .attr("z", 1)
+        .attr("height", z(data[0].dx) - 1)
+        .attr("width", function(d) { return width - y(d.y); });
 
       svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis);
+        .attr("class", "z axis")
+        .attr("transform", "translate(0,"  + ")")
+        .call(zAxis);
     })
 
 
