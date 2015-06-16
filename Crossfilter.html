@@ -1,0 +1,47 @@
+<html>
+  <head>
+    <title></title>
+    <meta content="">
+    <style></style>
+  </head>
+  <body>
+    <div id='time_series'></div>
+    <div id='histogram_chart'></div>
+    
+  <script src="d3.v3.min.js" > </script>
+  <script src="crossfilter.v1.js" > </script>
+  <script src="dc.min.js" > </script>  
+  
+  <script>
+    var time_series = dc.lineChart('#time_series');
+    var histogram_chart = dc.barChart('#histogram_chart');
+    
+    d3.csv('data.csv', function (data) {
+    /* since its a csv file we need to format the data a bit */
+      var dateFormat = d3.time.format('%m/%d/%Y');
+      var numberFormat = d3.format('.2f');
+
+      data.forEach(function (d) {
+          d.dd = dateFormat.parse(d.date);
+          d.month = d3.time.month(d.dd); // pre-calculate month for better performance
+          d.a = +d.a; // coerce to number
+          d.b = +d.b;
+      });
+      
+      var ndx = crossfilter(data);
+      var all = ndx.groupAll();
+      
+      var yearlyDimension = ndx.dimension(function (d) {
+        return d3.time.year(d.dd).getFullYear();
+      });
+    
+    
+    
+    
+    
+    
+    
+  </script>
+  
+  </body>
+</html>

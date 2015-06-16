@@ -1,0 +1,120 @@
+<html>
+  <head>
+    <title></title>
+    <meta content="">
+    <style>
+      /*
+      Relevant CSS classes include:
+
+      Labels on the X & Y axes:
+      .dygraph-axis-label
+      .dygraph-axis-label-x
+      .dygraph-axis-label-y
+      .dygraph-axis-label-y2
+
+      Chart labels, see http://dygraphs.com/tests/styled-chart-labels.html
+      .dygraph-title
+      .dygraph-xlabel
+      .dygraph-ylabel
+      .dygraph-y2label
+
+      The legend, see http://dygraphs.com/tests/series-highlight.html
+      .dygraph-legend
+      */
+      .dygraph-title {
+          color: gray;
+      }
+      
+      
+
+      .nav ul {
+        list-style: none;
+        background-color: #0E6EB8;
+        text-align: center;
+        padding: 0;
+        margin: 0;
+      }
+      .nav li {
+        font-family: 'Oswald';
+        font-size: 1.2em;
+        line-height: 30px;
+        height: 30px;
+        border-bottom: 1px solid #888;
+      }
+      .nav a {
+        text-decoration: none;
+        color: #fff;
+        display: block;
+        transition: .3s background-color;
+      }
+      .nav a:hover {
+        background-color: #444;
+      }
+      @media screen and (min-width: 600px) {
+        .nav li { 
+          border-bottom: none;
+          height: 40px;
+          line-height: 40px;
+          font-size: 1.4em;
+      }
+        .nav li {
+          display: inline-block;
+          margin-left: 10px;
+        }      
+      }
+      body {
+        margin: 0;
+        padding: 0;
+      }      
+      header {    
+        font-family: 'Oswald';
+        background-color:#444;
+        color:white;
+        text-align:center;
+        padding:10px; 
+        font-size: 24pt;
+      }
+      
+      
+    </style>
+    
+  </head>
+  
+  <body>
+    <header>
+      TIME SERIES VIEWER
+    </header>
+    
+    <div class="nav">
+      <ul style="list-style-type:none">
+        <li><a href="timeseriesviewer.html" title="Main" /> Overview </a> </li>
+        <li><a href="PandID.html" title="Minimap" /> Piping and Instrumentation </a> </li>
+        <li><a href="#" title="Reports" /> Reports </a> </li>
+        <li><a href="#" title="Analytics" /> Analytics </a> </li>
+        <li><a href="#" title="Export" /> Export </a> </li>
+    </div>
+    
+    <div id="graph2" style="width:900px; height:300px;"></div>
+    <p>Value bottom right adjusts moving average. Default is 1 </p>
+    <p>Click and drag to zoom, double click to return</p>
+    
+    <script src="d3.v3.min.js" > </script>
+    <script src="dygraph-combined.js" > </script>
+    <script>
+      //http://dygraphs.com/options.html#Interactive%20Elements           
+      g2 = new Dygraph(
+            document.getElementById("graph2"),
+            "data.csv",
+            {// options go here. See http://dygraphs.com/options.html
+            rollPeriod: 1,
+            showRoller: true,
+            legend: 'always',
+            animatedZooms: true,
+            title: 'Time series with zoom',
+            //showRangeSelector: true
+            }
+            );
+    </script>
+
+</body>
+</html>

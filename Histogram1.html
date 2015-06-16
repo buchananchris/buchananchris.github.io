@@ -73,7 +73,7 @@
         d.e = +d.E;
       });
       
-      var values = csvData.map(function(obj) {return obj.a; })
+      var values = csvData.map(function(obj) {return obj.b; })
       values = values.filter(function(v,i) {return values.indexOf(v) == i; })
       
       console.log(values)

@@ -1,0 +1,6 @@
+Instructions:
+
+Time series
+Click and drag to zoom into an area of interest
+Double click to return to default view
+Enable and adjust moving average with the textbox in the bottom left corner

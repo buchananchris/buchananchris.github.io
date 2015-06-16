@@ -1,0 +1,451 @@
+<html>
+  <head>
+    <title>Time Series Viewer</title>
+    <meta content="">
+
+    <script src="d3.js" > </script>
+    <script src='crossfilter.js' type='text/javascript'></script>
+    <script src='dc.min.js' type='text/javascript'></script>
+    <script src="c3.js"></script>
+    <script type="text/javascript" src="protovis.js"></script>
+    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="jquery.zoomooz.js"></script>
+    
+    <link href='bootstrap.min.css' rel='stylesheet' type='text/css'>
+    <link href='dc.css' rel='stylesheet' type='text/css'>
+    
+    <meta charset="utf-8">
+    <!-- This is html comments -->
+    <style>
+      .nav ul {
+        list-style: none;
+        background-color: #0E6EB8;
+        text-align: center;
+        padding: 0;
+        margin: 0;
+      }
+      .nav li {
+        font-family: 'Oswald';
+        font-size: 1.2em;
+        line-height: 30px;
+        height: 30px;
+        border-bottom: 1px solid #888;
+      }
+      .nav a {
+        text-decoration: none;
+        color: #fff;
+        display: block;
+        transition: .3s background-color;
+      }
+      .nav a:hover {
+        background-color: #444;
+      }
+      @media screen and (min-width: 600px) {
+        .nav li { 
+          border-bottom: none;
+          height: 40px;
+          line-height: 40px;
+          font-size: 1.4em;
+      }
+        .nav li {
+          display: inline-block;
+          margin-left: 10px;
+        }      
+      }
+      
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      header {    
+        font-family: 'Oswald';
+        background-color:#444;
+        color:white;
+        text-align:center;
+        padding:10px; 
+        font-size: 24pt;
+      }
+      h4 {
+        font-family: 'Oswald';
+      }
+
+      /* This is how you comment in the styles section */
+      
+      #sliding_diagram {
+        position: absolute;
+        bottom: 100%;
+        height : 100%;
+        width : 100%;
+        background: white;
+        opacity:0;  
+      }
+      .box {
+        position: absolute;
+        overflow: hidden;
+        z-index: 1;
+      }
+      .box:hover #sliding_diagram {
+        bottom: 0;
+        -webkit-transition: all 1s, -webkit-transform 1s;
+        transition: all 1s, transform 1s;
+        width:100%;
+        height:100%;
+        opacity:1;
+      }
+      
+      .c3 path, .c3 line {
+        fill: none;
+        stroke: #000;
+      }
+
+      .axis path, .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+      #item2 {
+        position:absolute;
+        left:50px;
+        top:80px;
+        width:700px;
+        height:330px;
+        border:0px solid red;
+      }
+      #item3 {
+        background-color:#EFEFFF;
+        position:absolute;
+        left:50px;
+        top:0px;
+        width:100px;
+        height:150px;
+        border:0px solid red;
+        opacity: 0;
+      }
+      #item4 {
+        background-color:#EFEFFF;
+        position:absolute;
+        left:280px;
+        top:70px;
+        width:150px;
+        height:70px;
+        border:0px solid red;
+        opacity: 0;
+      }
+      #item5 {
+        background-color:#EFEFFF;
+        position:absolute;
+        left:500px;
+        top:0px;
+        width:170px;
+        height:70px;
+        border:0px solid red;
+        opacity: 0;
+      }
+      #item6 {
+        background-color:#EFEFFF;
+        position:absolute;
+        left:180px;
+        top:160px;
+        width:150px;
+        height:150px;
+        border:0px solid red;
+        opacity: 0;
+      }
+      #item7 {
+        background-color:#EFEFFF;
+        position:absolute;
+        left:540px;
+        top:110px;
+        width:100px;
+        height:150px;
+        border:0px solid red;
+        opacity: 0;
+      }
+      #item8 {
+        background-color:#EFEFFF;
+        position:absolute;
+        left:430px;
+        top:240px;
+        width:200px;
+        height:150px;
+        border:0px solid red;
+        opacity: 0;
+      }
+      #item9 {
+        background-color:#EFEFFF;
+        position:absolute;
+        left:50px;
+        top:150px;
+        width:100px;
+        height:170px;
+        border:0px solid red;
+        opacity: 0;
+      }
+      #item10 {
+        background-color:#EFEFFF;
+        position:absolute;
+        left:260px;
+        top:320px;
+        width:150px;
+        height:70px;
+        border:0px solid red;
+        opacity: 0;
+      }
+    </style>
+  
+  </head>
+  
+
+  <body>
+    <header>
+      TIME SERIES VIEWER
+    </header>
+    
+    <div class="nav">
+      <ul style="list-style-type:none">
+        <li><a href="#" title="Main" /> Overview </a> </li>
+        <li><a href="PandID.html" title="Minimap" /> Piping and Instrumentation </a> </li>
+        <li><a href="#" title="Reports" /> Reports </a> </li>
+        <li><a href="HistogramZoom.html" title="Analytics" /> Analytics </a> </li>
+        <li><a href="#" title="Export" /> Export </a> </li>
+    </div>
+
+    <div id="item2" class="zoomViewport" style="position: absolute; top:100px; left: 280px"> 
+      <div class="zoomContainer">
+        <img src=te.svg style="width:700px"/>
+        <div id="item3" class="zoomTarget"> </div>
+        <div id="item4" class="zoomTarget"> </div>
+        <div id="item5" class="zoomTarget"> </div>
+        <div id="item6" class="zoomTarget"> </div>
+        <div id="item7" class="zoomTarget"> </div>
+        <div id="item8" class="zoomTarget"> </div>
+        <div id="item9" class="zoomTarget"> </div>
+        <div id="item10" class="zoomTarget"> </div>
+      </div>
+    </div>
+    
+    
+    <div class='container' id='main-container' style="position: absolute; top:550px; left: 200px">
+    <div class='content'>
+    <div class='container' style='font: 12px sans-serif;'>
+      <div class='row'>
+        <div class='span12' id='dc-time-chart'>
+          <h4>Time series</h4>
+        </div>
+      </div>
+      
+
+      
+      <div class='row'>
+        <div class='span12' id='dc-depth-chart'>
+          <h4>Bar chart</h4>
+        </div>
+      </div>
+      
+      <div id="test2">
+        <h4>Scatter</h4>
+      </div>
+      <div id="test1" style="opacity:0">
+        <h4>Scatter2</h4>
+      </div>
+
+    </div>
+    </div>
+    </div>
+
+
+
+
+    
+<script>
+  
+/**********************************
+* Step0: Load data from json file *
+**********************************/
+
+// load data from a csv file
+d3.csv("testdata2.csv", function (data) {
+
+  // format our data
+  var dtgFormat = d3.time.format("%Y-%m-%dT%H:%M:%S");
+  
+  data.forEach(function(d) { 
+    d.dtg   = dtgFormat.parse(d.origintime.substr(0,19)); 
+    d.depth = d3.round(+d.depth,0);
+    d.mag   = d3.round(+d.magnitude,1);
+  });
+
+/******************************************************
+* Step1: Create the dc.js chart objects & ling to div *
+******************************************************/
+
+  var magnitudeChart = dc.barChart("#dc-magnitude-chart");
+  var depthChart = dc.barChart("#dc-depth-chart");
+  var timeChart = dc.lineChart("#dc-time-chart");
+  var dayOfWeekChart = dc.rowChart("#dc-dayweek-chart");
+  
+  var chart1 = dc.scatterPlot("#test1");
+  var chart2 = dc.scatterPlot("#test2");
+
+/****************************************
+*       Run the data through crossfilter    *
+****************************************/
+
+  var facts = crossfilter(data);  // Gets our 'facts' into crossfilter
+
+/******************************************************
+* Create the Dimensions                               *
+* A dimension is something to group or filter by.     *
+* Crossfilter can filter by exact value, or by range. *
+******************************************************/
+
+  // for Magnitude
+  var magValue = facts.dimension(function (d) {
+    return d.mag;       // group or filter by magnitude
+  });
+  var magValueGroupSum = magValue.group()
+    .reduceSum(function(d) { return d.mag; });  // sums the magnitudes per magnitude
+  var magValueGroupCount = magValue.group()
+    .reduceCount(function(d) { return d.mag; }) // counts the number of the facts by magnitude
+
+  // For datatable
+  var timeDimension = facts.dimension(function (d) {
+    return d.dtg;
+  }); // group or filter by time
+
+  // for Depth
+  var depthValue = facts.dimension(function (d) {
+    return d.depth;
+  });
+  var depthValueGroup = depthValue.group();
+  
+  // define a daily volume Dimension
+  var volumeByDay = facts.dimension(function(d) {
+    return d3.time.hour(d.dtg);
+  });
+  // map/reduce to group sum
+  var volumeByDayGroup = volumeByDay.group()
+    .reduceCount(function(d) { return d.dtg; });
+  
+  //for day of week
+  var dayOfWeek = facts.dimension(function (d) {
+    var day = d.dtg.getDay();
+    switch (day) {
+      case 0:
+        return "0.Sun";
+      case 1:
+        return "1.Mon";
+      case 2:
+        return "2.Tue";
+      case 3:
+        return "3.Wed";
+      case 4:
+        return "4.Thu";
+      case 5:
+        return "5.Fri";
+      case 6:
+        return "6.Sat";
+    }
+  });
+  var dayOfWeekGroup = dayOfWeek.group();
+
+  //For scatter
+  var dim1 = facts.dimension(function (d) {
+    return [+d.mag, +d.depth];
+  });
+  var group1 = dim1.group();
+  var dim2 = facts.dimension(function (d) {
+    return [+d.depth, +d.mag];
+  });
+  var group2 = dim2.group();
+  
+/***************************************
+*       Step4: Create the Visualisations   *
+***************************************/
+  
+  // Magnitide Bar Graph Summed
+  magnitudeChart.width(480)
+    .height(150)
+    .margins({top: 10, right: 10, bottom: 20, left: 40})
+    .dimension(magValue)                                                                // the values across the x axis
+    .group(magValueGroupSum)                                                    // the values on the y axis
+        .transitionDuration(500)
+    .centerBar(true)    
+        .gap(56)                                            // bar width Keep increasing to get right then back off.
+    .x(d3.scale.linear().domain([0.5, 7.5]))
+        .elasticY(true)
+        //.xAxis().tickFormat(function(v) {return v;}); 
+
+  // Depth bar graph
+  depthChart.width(760)
+    .height(150)
+    .margins({top: 10, right: 10, bottom: 20, left: 40})
+    .dimension(depthValue)
+    .group(depthValueGroup)
+        .transitionDuration(300)
+    .centerBar(true)    
+        .gap(1)                    // bar width Keep increasing to get right then back off.
+    .x(d3.scale.linear().domain([0, 50]))
+        .elasticY(true)
+        .xAxis().ticks(4);
+
+  // time graph
+  timeChart.width(760)
+    .height(200)
+    .margins({top: 10, right: 10, bottom: 20, left: 40})
+    .dimension(volumeByDay)
+    .group(volumeByDayGroup)
+    .transitionDuration(500)
+        .elasticY(true)
+    .x(d3.time.scale().domain([new Date(2013, 6, 18), new Date(2013, 6, 24)])) // scale and domain of the graph
+    .xAxis();
+    
+  // row chart day of week
+  dayOfWeekChart.width(300)
+    .height(220)
+    .margins({top: 5, left: 10, right: 10, bottom: 20})
+    .dimension(dayOfWeek)
+    .group(dayOfWeekGroup)
+    //.colors(d3.scale.category10())
+    .label(function (d){
+        return d.key.split(".")[1];
+    })
+    .title(function(d){return d.value;})
+    .elasticX(true)
+    .xAxis().ticks(4);
+    
+  //Scatter
+  chart2.width(700)
+    .height(500)
+    .x(d3.scale.linear().domain([0, 10]))
+    .yAxisLabel("y")
+    .xAxisLabel("x")
+    .symbolSize(8)
+    .clipPadding(10)
+    .dimension(dim1)
+    .group(group1)
+      .transitionDuration(500);
+  chart1.width(300)
+    .height(300)
+    .x(d3.scale.linear().domain([0, 400]))
+    .yAxisLabel("z")
+    .xAxisLabel("y")
+    .symbolSize(8)
+    .clipPadding(10)
+    .dimension(dim2)
+    .group(group2)
+      .transitionDuration(500);
+
+/****************************
+* Step6: Render the Charts  *
+****************************/
+                        
+  dc.renderAll();
+  
+});
+  
+</script>
+
+    
+  </body>
+</html>
